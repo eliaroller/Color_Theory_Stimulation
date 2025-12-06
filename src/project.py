@@ -4,7 +4,7 @@ import sys
 
 class application:
 
-    def __init__(self, light = ((150, 200), 40), sphere = ((350, 200), 60)):
+    def __init__(self):
 
         pygame.init()
 
@@ -14,9 +14,9 @@ class application:
 
         self.clock = pygame.time.Clock()
 
-        self.light = light
+        self.light = lightbulb((150, 200), 40)
 
-        self.sphere = sphere
+        self.sphere = ball((350, 200), 60)
 
 class lightbulb:
 
@@ -78,3 +78,42 @@ def main():
             if event.type == pygame.QUIT:
 
                 running = False
+
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_r:
+
+                    visual.light.self_color((255, 80, 80))
+
+                elif event.key == pygame.K_g:
+
+                    visual.light.self_color((80, 255, 80))
+
+                elif event.key == pygame.K_b:
+
+                    visual.light.self_color((80, 80, 255))
+
+                elif event.key == pygame.K_w:
+
+                    visual.light.self_color((255, 255, 255))
+
+        visual.sphere.light_applied(visual.light.color)
+
+        visual.screen.fill((30, 30, 30))
+
+        visual.light.draw(visual.screen)
+
+        visual.sphere.draw(visual.screen)
+
+        pygame.display.flip()
+
+        visual.clock.tick(60)
+
+    pygame.quit()
+
+    sys.exit()
+
+
+if __name__ == "__main__":
+
+    main()
