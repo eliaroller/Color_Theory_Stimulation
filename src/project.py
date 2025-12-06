@@ -24,7 +24,7 @@ class lightbulb:
 
     def __init__(self, position, radius, color = (255, 255, 255)):
 
-        self.position = position
+        self.position = list(position)
 
         self.radius = radius
 
@@ -33,6 +33,10 @@ class lightbulb:
     def self_color(self, color):
 
         self.color = color
+
+    def move_to(self, pos):
+
+        self.position[0], self.position[1] = pos
 
     def draw(self, screen):
 
@@ -94,6 +98,8 @@ def main():
 
     running = True
 
+    mouse_pressed = False
+
     while running:
 
         for event in pygame.event.get():
@@ -101,6 +107,20 @@ def main():
             if event.type == pygame.QUIT:
 
                 running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+                mx, my = pygame.mouse.get_pos()
+
+                lx, ly = visual.light.position
+
+                if(mx - lx) ** 2 + (my - ly) ** 2 <= visual.light.radius ** 2:
+
+                    mouse_pressed = True
+
+            if event.type == pygame.MOUSEBUTTONUP:
+
+                mouse_pressed = False
 
             if event.type == pygame.KEYDOWN:
 
@@ -119,6 +139,10 @@ def main():
                 elif event.key == pygame.K_w:
 
                     visual.light.self_color((255, 255, 255))
+
+        if mouse_pressed:
+
+            visual.light.move_to(pygame.mouse.get_pos())
 
         visual.sphere.update_shading(visual.light.position, visual.light.color)
 
