@@ -1,5 +1,7 @@
 import pygame
 
+import math
+
 import sys
 
 class application:
@@ -46,21 +48,42 @@ class ball:
 
         self.base_color = base_color
 
-        self.shaded_color = base_color
+        self.light_surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
 
-    def light_applied(self, light_color):
+    def update_shading(self, light_position, light_color):
 
-        r = min(255, self.base_color[0] * light_color[0] // 255)
+        self.light_surface.fill((0, 0, 0, 0))
 
-        g = min(255, self.base_color[1] * light_color[1] // 255)
+        sx, sy = self.position
 
-        b = min(255, self.base_color[2] * light_color[2] // 255)
+        lx, ly = light_position
 
-        self.shaded_color = (r, g, b)
+        dx = lx - sx
+
+        dy = ly - sy
+
+        angle = math.atan2(dy, dx)
+
+        for n in range(self.radius):
+
+            falling = 1 - (n / self.radius)
+
+            falling = max(0, falling)
+
+
+            offset_x = int(math.cos(angle) * (self.radius - n) * 0.3)
+
+            offset_y = int(math.sin(angle) * (self.radius - n) * 0.3)
+
+            color = (int(light_color[0] * falling), int(light_color[1] * falling), int(light_color[2] * falling), int(180 * falling))
+
+            pygame.draw.circle(self.light_surface, color, (self.radius + offset_x, self.radius + offset_y), self.radius - n)
+
+        
 
     def draw(self, screen):
 
-        pygame.draw.circle(screen, self.shaded_color, self.position, self.radius)
+        screen.blit(self.light_surface, (self.position[0] - self.radius, self.position[1] - self.radius))
 
 
 
@@ -97,7 +120,7 @@ def main():
 
                     visual.light.self_color((255, 255, 255))
 
-        visual.sphere.light_applied(visual.light.color)
+        visual.sphere.update_shading(visual.light.position, visual.light.color)
 
         visual.screen.fill((30, 30, 30))
 
