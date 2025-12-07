@@ -52,7 +52,7 @@ class ball:
 
         self.base_color = base_color
 
-        self.light_surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+        self.light_surface = pygame.Surface((radius * 7, radius * 7), pygame.SRCALPHA)
 
     def update_shading(self, light_position, light_color):
 
@@ -82,6 +82,14 @@ class ball:
             color = (int(light_color[0] * falling), int(light_color[1] * falling), int(light_color[2] * falling), int(180 * falling))
 
             pygame.draw.circle(self.light_surface, color, (self.radius + offset_x, self.radius + offset_y), self.radius - n)
+
+        highlight_radius = self.radius // 4
+
+        highlight_offset_x = int(math.cos(angle) * self.radius * 0.6)
+
+        highlight_offset_y = int(math.sin(angle) * self.radius * 0.6)
+
+        pygame.draw.circle(self.light_surface, (255, 255, 255, 200), (self.radius + highlight_offset_x, self.radius + highlight_offset_y), highlight_radius)
 
         
 
@@ -124,19 +132,19 @@ def main():
 
             if event.type == pygame.KEYDOWN:
 
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_q:
 
                     visual.light.self_color((255, 80, 80))
 
-                elif event.key == pygame.K_g:
+                elif event.key == pygame.K_w:
 
                     visual.light.self_color((80, 255, 80))
 
-                elif event.key == pygame.K_b:
+                elif event.key == pygame.K_e:
 
                     visual.light.self_color((80, 80, 255))
 
-                elif event.key == pygame.K_w:
+                elif event.key == pygame.K_r:
 
                     visual.light.self_color((255, 255, 255))
 
