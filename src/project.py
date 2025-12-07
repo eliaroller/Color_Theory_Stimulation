@@ -10,7 +10,11 @@ class application:
 
         pygame.init()
 
-        self.screen = pygame.display.set_mode((600, 400))
+        self.is_fullscreen = False
+
+        self.windowed_size = (600, 400)
+
+        self.screen = pygame.display.set_mode(self.windowed_size)
 
         pygame.display.set_caption("Color Theory Visualizer")
 
@@ -19,6 +23,20 @@ class application:
         self.light = lightbulb((150, 200), 40)
 
         self.sphere = ball((350, 200), 60)
+
+    def fullscreen_toggle(self):
+
+        if self.is_fullscreen:
+
+            self.screen = pygame.display.set_mode(self.windowed_size)
+
+            self.is_fullscreen = False
+
+        else:
+
+            self.screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+
+            self.is_fullscreen = True
 
 class lightbulb:
 
@@ -189,6 +207,10 @@ def main():
                 elif event.key == pygame.K_r:
 
                     visual.light.self_color((255, 255, 255))
+
+                elif event.key == pygame.K_f:
+
+                    visual.fullscreen_toggle()
 
         if mouse_pressed:
 
