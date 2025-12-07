@@ -30,6 +30,12 @@ class lightbulb:
 
         self.color = color
 
+        self.light_on = True
+
+        self.dragging = False
+
+        self.cord_start = (position[0], 50)
+
     def self_color(self, color):
 
         self.color = color
@@ -38,9 +44,43 @@ class lightbulb:
 
         self.position[0], self.position[1] = pos
 
+    def cord_event(self, event):
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+
+            mx, my = pygame.mouse.get_pos()
+
+            bx, by = self.position
+
+            if (mx - bx) ** 2 + (my - by) ** 2 <= self.radius ** 2:
+
+                self.dragging = True
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+
+            self.dragging = False
+
+            if self.position[1] < 50:
+
+                self.light_on = not self.light_on
+
+                self.position[1] = 100
+
+        elif event.type == pygame.MOUSEMOTION and self.dragging:
+
+            mx, my = pygame.mouse.get_pos()
+
+            self.move_to((mx, my))
+
     def draw(self, screen):
 
-        pygame.draw.circle(screen, self.color, self.position, self.radius)
+        pygame.draw.line(screen, (100, 100, 100), self.cord_start, self.position, 4)
+
+        bulb_color = self.color if self.light_on else (50, 50, 50)
+
+        pygame.draw.circle(screen, bulb_color, self.position, self.radius)
+
+
 
 class ball:
 
@@ -116,6 +156,8 @@ def main():
 
                 running = False
 
+            visual.light.cord_event(event)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
 
                 mx, my = pygame.mouse.get_pos()
@@ -152,7 +194,13 @@ def main():
 
             visual.light.move_to(pygame.mouse.get_pos())
 
-        visual.sphere.update_shading(visual.light.position, visual.light.color)
+        if visual.light.light_on:
+
+           visual.sphere.update_shading(visual.light.position, visual.light.color)
+
+        else:
+
+            visual.sphere.update_shading(visual.light.position, (0, 0, 0))
 
         visual.screen.fill((30, 30, 30))
 
